@@ -21,7 +21,11 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      CConfig
+      Compressor
+      ImageParser
+      Types
+      Utils
   other-modules:
       Paths_imageCompressor
   hs-source-dirs:

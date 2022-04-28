@@ -1,14 +1,16 @@
 module Main where
 
+import CConfig (CConfig (), getOpts, defaultConf, checkConfig, exitError)
+import Compressor (compressor)
+import ImageParser (readImage)
+import Data.Maybe (fromJust, isNothing)
 import System.Environment (getArgs)
-import Lib (closest, parseFile, Point (), expel)
 import Text.Read (readMaybe)
-import Data.Maybe (isNothing, fromJust)
 
 main :: IO ()
-main = do
-    args <- getArgs
-    content <- readFile $ head args
-    case parseFile content of
-        Nothing -> print "Invalid arguments"
-        Just x -> expel x >>= print
+main =
+    getArgs >>= ( \args ->
+            if checkConfig $ getOpts defaultConf args
+            then compressor $ getOpts defaultConf args
+            else exitError $ getOpts defaultConf args
+        )

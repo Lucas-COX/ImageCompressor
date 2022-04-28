@@ -10,7 +10,7 @@ import Data.Word (Word8)
 import Text.Read (readMaybe)
 
 parseColor :: String -> Maybe Pixel
-parseColor s = case readMaybe s :: Maybe (Word8, Word8, Word8) of
+parseColor s = case readMaybe s :: Maybe (Word8, Word8, Word8) of --todo error handling for x < 0 && x > 255
     Nothing -> Nothing
     Just (r, g, b) -> Just (defaultPixel {r = r, g = g, b = b})
 

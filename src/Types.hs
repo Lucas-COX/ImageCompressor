@@ -29,3 +29,12 @@ defaultPixel = Pixel {
 
 printPixels :: [Pixel] -> IO ()
 printPixels = foldr ((>>) . print) (return ())
+
+
+data Cluster = Cluster {
+    centr :: Pixel,
+    pxs :: [Pixel]
+}
+
+instance Show Cluster where
+    show (Cluster c ps) = "--\n" ++ show c ++ "\n" ++ concatMap (\a -> show a ++ "\n") ps

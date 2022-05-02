@@ -6,3 +6,4 @@ Lib.hs
 wolfram.cabal
 liste
 bootstrap
+dist-newstyle

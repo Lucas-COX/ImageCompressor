@@ -1,40 +1,53 @@
 module Types (
+    Color (..),
     Pixel (..),
+    Cluster (..),
+    defaultColor,
     defaultPixel,
-    printPixels
+    defaultCluster,
     ) where
+
 import Data.Word (Word8)
+import System.Random
 
 
-data Pixel = Pixel {
+data Color = Color {
     r :: Word8,
     g :: Word8,
-    b :: Word8,
+    b :: Word8
+} deriving (Eq)
+
+instance Show Color where
+    show (Color r g b) = show (r, g, b)
+
+
+defaultColor :: Color
+defaultColor = Color 0 0 0
+
+data Pixel = Pixel {
+    c :: Color,
     x :: Int,
     y :: Int
 }
 
 instance Show Pixel where
-    show (Pixel r g b x y)  = show (x, y) ++ " " ++ show (r, g, b)
-
+    show (Pixel c x y)  = show (x, y) ++ " " ++ show c
 
 defaultPixel :: Pixel
 defaultPixel = Pixel {
-    r = 0,
-    g = 0,
-    b = 0,
+    c = defaultColor,
     x = 0,
     y = 0
 }
 
-printPixels :: [Pixel] -> IO ()
-printPixels = foldr ((>>) . print) (return ())
-
 
 data Cluster = Cluster {
-    centr :: Pixel,
+    centr :: Color,
     pxs :: [Pixel]
 }
 
 instance Show Cluster where
-    show (Cluster c ps) = "--\n" ++ show c ++ "\n" ++ concatMap (\a -> show a ++ "\n") ps
+    show (Cluster c ps) = "--\n" ++ show c ++ "\n-\n" ++ concatMap (\a -> show a ++ "\n") ps
+
+defaultCluster :: Cluster
+defaultCluster = Cluster defaultColor []

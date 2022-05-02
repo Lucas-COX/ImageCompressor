@@ -2,7 +2,7 @@ module ImageParser (
     readImage
 ) where
 
-import Types (Pixel (..), defaultPixel)
+import Types (Pixel (..), Color (..), defaultPixel)
 import Utils (getEndOfList, listToMaybe)
 import Data.String (words)
 import Data.List (tail)
@@ -12,7 +12,7 @@ import Text.Read (readMaybe)
 parseColor :: String -> Maybe Pixel
 parseColor s = case readMaybe s :: Maybe (Word8, Word8, Word8) of --todo error handling for x < 0 && x > 255
     Nothing -> Nothing
-    Just (r, g, b) -> Just (defaultPixel {r = r, g = g, b = b})
+    Just (r, g, b) -> Just (defaultPixel {c = Color r g b})
 
 
 parsePosition :: String -> Maybe Pixel -> Maybe Pixel

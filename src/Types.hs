@@ -48,7 +48,8 @@ data Cluster = Cluster {
 }
 
 instance Show Cluster where
-    show (Cluster c ps) = "--\n" ++ show c ++ "\n-\n" ++ concatMap (\a -> show a ++ "\n") ps
+    show (Cluster c ps) = "--\n" ++ show c
+        ++ "\n-\n" ++ concatMap (\a -> show a ++ "\n") ps
 
 defaultCluster :: Cluster
 defaultCluster = Cluster defaultColor []

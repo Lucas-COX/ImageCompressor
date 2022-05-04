@@ -1,7 +1,13 @@
 module Compressor where
 
 import CConfig (CConfig (..), exitMessage)
-import Types (Pixel (..), Color (..), Cluster (..), defaultCluster, defaultColor)
+import Types (
+    Pixel (..),
+    Color (..),
+    Cluster (..),
+    defaultCluster,
+    defaultColor
+    )
 import Utils (readMaybeFile)
 import ImageParser (readImage)
 import Data.Maybe (fromJust, fromMaybe, isNothing)

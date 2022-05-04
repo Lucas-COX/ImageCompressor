@@ -11,7 +11,7 @@ import System.Random (StdGen (..), newStdGen)
 main :: IO ()
 main =
     getArgs >>= ( \args ->
-        newStdGen >>= (\gen ->
+        newStdGen >>= ( \gen ->
             if checkConfig $ getOpts defaultConf args
             then compressor gen $ getOpts defaultConf args
             else exitError $ getOpts defaultConf args

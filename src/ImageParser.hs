@@ -6,13 +6,23 @@ import Types (Pixel (..), Color (..), defaultPixel)
 import Utils (getEndOfList, listToMaybe)
 import Data.String (words)
 import Data.List (tail)
-import Data.Word (Word8)
 import Text.Read (readMaybe)
 
+
+validColor :: (Double, Double, Double) -> Bool
+validColor (r, g, b)
+    | r < 0 || r > 255 = False
+    | g < 0 || g > 255 = False
+    | b < 0 || g > 255 = False
+    | otherwise = True
+
+
 parseColor :: String -> Maybe Pixel
-parseColor s = case readMaybe s :: Maybe (Word8, Word8, Word8) of --todo error handling for x < 0 && x > 255
+parseColor s = case readMaybe s :: Maybe (Double, Double, Double) of
     Nothing -> Nothing
-    Just (r, g, b) -> Just (defaultPixel {c = Color r g b})
+    Just (r, g, b) -> if validColor (r, g, b)
+        then Just (defaultPixel {c = Color r g b})
+        else Nothing
 
 
 parsePosition :: String -> Maybe Pixel -> Maybe Pixel

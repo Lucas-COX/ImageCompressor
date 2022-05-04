@@ -22,9 +22,12 @@ randomWord8 g = fst $ genWord8 $ snd $ genWord8 g
 
 
 randomColor :: StdGen -> Color -> Int -> (Color, StdGen)
-randomColor g c 0 = randomColor (snd $ genWord8 g) (c {r = fst $ genWord8 g}) 1
-randomColor g c 1 = randomColor (snd $ genWord8 g) (c {g = fst $ genWord8 g}) 2
-randomColor g c 2 = randomColor (snd $ genWord8 g) (c {b = fst $ genWord8 g}) 3
+randomColor g c 0 =
+    randomColor (snd $ genWord8 g) (c {r = fromIntegral $ fst $ genWord8 g}) 1
+randomColor g c 1 =
+    randomColor (snd $ genWord8 g) (c {g = fromIntegral $ fst $ genWord8 g}) 2
+randomColor g c 2 =
+    randomColor (snd $ genWord8 g) (c {b = fromIntegral $ fst $ genWord8 g}) 3
 randomColor g c _ = (c, g)
 
 
@@ -42,12 +45,13 @@ emptyCluster (Cluster centr pxs) = Cluster centr []
 distance :: Color -> Color -> Double
 distance (Color xa ya za) (Color xb yb zb) =
     sqrt (
-        ((fromIntegral xb :: Double) - (fromIntegral xa :: Double)) ^ 2 +
-        ((fromIntegral yb :: Double) - (fromIntegral ya :: Double)) ^ 2 +
-        ((fromIntegral zb :: Double) - (fromIntegral za :: Double)) ^ 2)
+        (xb - xa) ^ 2 +
+        (yb - ya) ^ 2 +
+        (zb - za) ^ 2)
 
 
 findClosestPoint :: [Color] -> Color -> Maybe Color -> Maybe Color
+-- findClosestPoint ctr pt = minimum $ fmap (distance pt) ctr
 findClosestPoint (p:ps) p2 c =
     if isNothing c || distance p p2 < distance (fromJust c) p2
     then findClosestPoint ps p2 (Just p)
@@ -82,14 +86,15 @@ tryDistances (d:ds) lim = d < lim && tryDistances ds lim
 tryDistances [] _ = True
 
 
+mean :: [Double] -> Double
+mean xs = sum xs / fromIntegral (length xs)
+
+
 meanPixels :: [Pixel] -> Color
-meanPixels [] = defaultColor
-meanPixels ps =
-    defaultColor {
-    r = fromIntegral (fromIntegral (foldr ((+) . (r . c)) 0 ps) `div` length ps),
-    g = fromIntegral (fromIntegral (foldr ((+) . (g . c)) 0 ps) `div` length ps),
-    b = fromIntegral (fromIntegral (foldr ((+) . (b . c)) 0 ps) `div` length ps)
-    }
+meanPixels ps = Color
+    (mean $ map (r . c) ps)
+    (mean $ map (g . c) ps)
+    (mean $ map (b . c) ps)
 
 
 moveClusters :: [Cluster] -> [Cluster]

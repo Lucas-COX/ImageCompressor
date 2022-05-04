@@ -12,13 +12,14 @@ import System.Random
 
 
 data Color = Color {
-    r :: Word8,
-    g :: Word8,
-    b :: Word8
+    r :: Double,
+    g :: Double,
+    b :: Double
 } deriving (Eq)
 
 instance Show Color where
-    show (Color r g b) = show (r, g, b)
+    show (Color r g b) =
+        show (round r, round g :: Int, round b :: Int)
 
 
 defaultColor :: Color

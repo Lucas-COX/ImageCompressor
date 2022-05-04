@@ -7,3 +7,8 @@ wolfram.cabal
 liste
 bootstrap
 dist-newstyle
+convertImg
+xpmImg
+result
+test.jpg
+result.xpm

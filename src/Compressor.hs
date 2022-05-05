@@ -121,8 +121,7 @@ moveClusters = map (\cl -> if length (pxs cl) /= 0
 
 kMeansLoop :: [Pixel] -> [Cluster] -> Double -> [Cluster]
 kMeansLoop img cs lim = if tryDistances distances lim
-    then newClusters
-    else kMeansLoop img newClusters lim
+    then nc else kMeansLoop img nc lim
     where
         clusters = assignClusters (map emptyCluster cs) img
         newClusters = moveClusters clusters

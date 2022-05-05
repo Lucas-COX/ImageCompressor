@@ -112,16 +112,14 @@ moveClusters = map (\cl -> if length (pxs cl) /= 0
 
 kMeansLoop :: [Pixel] -> [Cluster] -> Double -> [Cluster]
 kMeansLoop img cs lim = if tryDistances distances lim
-    then newClusters
-    else kMeansLoop img newClusters lim
+    then nc else kMeansLoop img nc lim
     where
-        clusters :: [Cluster]
-        clusters = assignClusters (map emptyCluster cs) img
-        newClusters :: [Cluster]
-        newClusters = moveClusters clusters
+        clus :: [Cluster]
+        clus = assignClusters (map emptyCluster cs) img
+        nc :: [Cluster]
+        nc = moveClusters clus
         distances :: [Double]
-        distances = distanceList (getClusterColors clusters)
-            $ getClusterColors newClusters
+        distances = distanceList (getClusterColors clus) $ getClusterColors nc
 
 
 compressor :: StdGen -> CConfig -> IO ()

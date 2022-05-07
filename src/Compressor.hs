@@ -124,9 +124,9 @@ kMeansLoop img cs lim = if tryDistances distances lim
     then nc else kMeansLoop img nc lim
     where
         clusters = assignClusters (map emptyCluster cs) img
-        newClusters = moveClusters clusters
+        nc = moveClusters clusters
         distances = distanceList (getClusterColors clusters)
-            $ getClusterColors newClusters
+            $ getClusterColors nc
 
 
 compressor :: StdGen -> CConfig -> IO ()

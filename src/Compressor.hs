@@ -12,7 +12,7 @@ import Utils (readMaybeFile)
 import ImageParser (readImage)
 import Data.Maybe (fromJust, fromMaybe, isNothing)
 import Data.Word (Word8)
-import System.Random (genWord8, StdGen, randomR)
+import System.Random (genWord8, StdGen)
 
 
 getClusterColors :: [Cluster] -> [Color]
@@ -37,21 +37,11 @@ randomColor g c 2 =
 randomColor g c _ = (c, g)
 
 
-randomPoint :: StdGen -> [Color] -> [Color] -> (Color, StdGen)
-randomPoint g [] taken = randomColor g defaultColor 0
-randomPoint g cs taken = (color, g')
+createClusters :: Int -> StdGen -> [Cluster]
+createClusters 0 g = []
+createClusters n g = (defaultCluster {centr = cen}):createClusters (n - 1) g'
     where
-        (index, g') = randomR (0, length cs) g
-        color = cs !! index
-
-
-createClusters :: Int -> StdGen -> [Pixel] -> [Cluster] -> [Cluster]
-createClusters 0 g ps cs = []
-createClusters n g ps cs =
-    createClusters (n - 1) g' newPixels cs ++ [(defaultCluster {centr = cen})]
-    where
-        (cen, g') = randomPoint g (map c ps) (getClusterColors cs)
-        newPixels = filter (\x -> c x `elem` getClusterColors cs) ps
+        (cen, g') = randomColor g defaultColor 0
 
 
 emptyCluster :: Cluster -> Cluster
@@ -67,6 +57,7 @@ distance (Color xa ya za) (Color xb yb zb) =
 
 
 findClosestPoint :: [Color] -> Color -> Maybe Color -> Maybe Color
+-- findClosestPoint ctr pt = minimum $ fmap (distance pt) ctr
 findClosestPoint (p:ps) p2 c =
     if isNothing c || distance p p2 < distance (fromJust c) p2
     then findClosestPoint ps p2 (Just p)
@@ -123,6 +114,7 @@ kMeansLoop :: [Pixel] -> [Cluster] -> Double -> [Cluster]
 kMeansLoop img cs lim = if tryDistances distances lim
     then nc else kMeansLoop img nc lim
     where
+        clusters :: [Cluster]
         clusters = assignClusters (map emptyCluster cs) img
         nc = moveClusters clusters
         distances = distanceList (getClusterColors clusters)
@@ -134,7 +126,6 @@ compressor g c = readMaybeFile (fromJust $ path c) >>= (\file ->
     case readImage file of
         Nothing -> exitMessage "Couldn't read file"
         Just img -> printClusters $
-            kMeansLoop img (
-                createClusters (fromJust $ number c) g img []
-            ) $ fromJust $ limit c
+            kMeansLoop img (createClusters (fromJust $ number c) g)
+            $ fromJust $ limit c
     )
